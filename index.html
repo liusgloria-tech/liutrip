@@ -239,7 +239,7 @@
         { category: '行程', title: '樂天世界主題樂園', mapUrl: 'https://maps.google.com/?q=Lotte+World+Adventure+Busan', hours: '10:00 - 21:00', closed: '無', notes: '', isBackup: false },
         { category: '行程', title: '樂天 Outlet？', mapUrl: 'https://maps.google.com/?q=Lotte+Premium+Outlet+Dongbusan', hours: '10:30 - 20:30', closed: '無', notes: '備用行程', isBackup: true },
         { category: '午餐', title: '百年土種蔘雞湯', mapUrl: 'https://maps.google.com/?q=百年土種蔘雞湯+釜山', hours: '10:00 - 21:00', closed: '全年無休', notes: '', isBackup: false },
-        { category: '晚餐', title: '味贊王烤肉 海雲台店', mapUrl: 'https://maps.google.com/?q=味贊王鹽烤肉+海雲台', hours: '12:00 - 23:00', closed: '無', notes: '主要晚餐烤肉', isBackup: false },
+        { category: '晚餐', title: '味贊王烤肉 海雲台店', mapUrl: 'https://maps.google.com/?q=味贊王鹽烤肉+海雲台', hours: '12:00 - 23:00', closed: '無', notes: '主要晚餐選項', isBackup: false },
         { category: '晚餐', title: '【備選】烏龜小區烤肉', mapUrl: 'https://maps.google.com/?q=烏龜小區烤肉+海雲台', hours: '16:00 - 23:00', closed: '無', notes: '高CP值烤肉備選', isBackup: true },
         { category: '晚餐', title: '【備選】水邊最高豬肉湯飯 海雲台店', mapUrl: 'https://maps.google.com/?q=水邊最高豬肉湯飯+海雲台', hours: '24 小時營業', closed: '無', notes: '湯飯備選', isBackup: true },
         { category: '行程', title: 'E-mart 大賣場採買', mapUrl: 'https://maps.google.com/?q=E-MART+Haeundae', hours: '10:00 - 23:00', closed: '每個月第 2、4 個週日公休（今天週一營業）', notes: '採買伴手禮與零食', isBackup: false }
@@ -255,29 +255,6 @@
       ]
     };
 
-    // 點擊地圖按鈕時的智慧開啟函式 (支援 iOS 自動判斷 App)
-    function openMap(event, url) {
-      event.preventDefault();
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      
-      // 判斷是否為 iOS 裝置 (iPhone, iPad, iPod)
-      const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-
-      if (isIOS) {
-        let appUrl = url;
-        if (url.startsWith('https://')) {
-          appUrl = url.replace('https://', 'comgooglemaps://');
-        }
-        
-        window.location.href = appUrl;
-        setTimeout(function () {
-          window.open(url, '_blank');
-        }, 500);
-      } else {
-        window.open(url, '_blank');
-      }
-    }
-
     function renderAll() {
       ['day1', 'day2', 'day3', 'day4', 'day5'].forEach(dayId => {
         const container = document.getElementById(dayId);
@@ -290,6 +267,7 @@
             
             const mapLink = item.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(item.title)}`;
 
+            // 這裡直接使用標準的 <a> 標籤並加上 target="_blank"，讓 Safari 直接順暢處理
             card.innerHTML = `
               <div class="card-header-tags">
                 <span class="card-tag">${item.category || '行程'}</span>
@@ -300,9 +278,9 @@
               <div class="card-hours">🚫 <b>公休日:</b> <span class="closed-day">${item.closed || '無'}</span></div>
               ${item.notes ? `<div class="card-info">📝 <b>備註:</b> ${item.notes}</div>` : ''}
               
-              <button class="btn-map" onclick="openMap(event, '${mapLink}')">
+              <a href="${mapLink}" target="_blank" class="btn-map">
                 📍 開啟 Google Map 定位
-              </button>
+              </a>
             `;
             container.appendChild(card);
           });
