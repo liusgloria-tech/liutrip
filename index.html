@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>釜山 5 天 4 夜行程清單</title>
+  <style>
+    :root {
+      --primary-color: #007aff;
+      --bg-color: #f2f2f7;
+      --card-bg: #ffffff;
+      --backup-card-bg: #f8f9fa;
+      --text-color: #1c1c1e;
+      --subtitle-color: #3a3a3c;
+      --warning-color: #ff3b30;
+      --border-radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding-bottom: 40px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #d1d1d6;
+      z-index: 100;
+      padding: 16px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    /* 日期頁籤列表 */
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      background-color: #fff;
+      padding: 12px;
+      gap: 10px;
+      border-bottom: 1px solid #e5e5ea;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 10px 18px;
+      border-radius: 20px;
+      border: none;
+      background-color: #e5e5ea;
+      color: #3a3a3c;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* 主內容區 */
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .day-content {
+      display: none;
+    }
+
+    .day-content.active {
+      display: block;
+    }
+
+    /* 行程卡片樣式 */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      margin-bottom: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #e5e5ea;
+    }
+
+    .card.is-backup {
+      background-color: var(--backup-card-bg);
+      border: 1px dashed #8e8e93;
+    }
+
+    .card-header-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background-color: #e5f1ff;
+      color: var(--primary-color);
+    }
+
+    .status-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background-color: #34c759;
+      color: white;
+    }
+
+    .status-tag.backup {
+      background-color: #8e8e93;
+      color: white;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .card-hours, .card-info {
+      font-size: 0.95rem;
+      color: var(--subtitle-color);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .closed-day {
+      color: var(--warning-color);
+      font-weight: 700;
+    }
+
+    .btn-map {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 0;
+      background-color: #e8f8ee;
+      color: #1e7e34;
+      border: 1px solid #b7e4c7;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>釜山行程清單 (唯讀檢視版)</h1>
+  </header>
+
+  <!-- 日期分頁標籤 -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchDay('day1', event)">10/16 (五)</button>
+    <button class="tab-btn" onclick="switchDay('day2', event)">10/17 (六)</button>
+    <button class="tab-btn" onclick="switchDay('day3', event)">10/18 (日)</button>
+    <button class="tab-btn" onclick="switchDay('day4', event)">10/19 (一)</button>
+    <button class="tab-btn" onclick="switchDay('day5', event)">10/20 (二)</button>
+  </div>
+
+  <div class="container">
+    <div id="day1" class="day-content active"></div>
+    <div id="day2" class="day-content"></div>
+    <div id="day3" class="day-content"></div>
+    <div id="day4" class="day-content"></div>
+    <div id="day5" class="day-content"></div>
+  </div>
+
+  <script>
+    const tripData = {
+      day1: [
+        { category: '行程', title: '約 10:45 離開北門，搭乘 11:00 的車', mapUrl: 'https://maps.google.com/?q=Taoyuan+Bus+Station', hours: '機場直達車時刻：10:45-11:24、11:00-11:39、11:15-11:54', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '搭機：桃園 2 航廈起飛 (14:40) -> 釜山 1 航廈抵達 (18:00)', mapUrl: 'https://maps.google.com/?q=Taoyuan+Airport+Terminal+2', hours: '14:40 - 18:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '入住飯店：Pore Premium (大廳路 54-1)', mapUrl: 'https://maps.google.com/?q=Hotel+Foret+Premium+Nampo', hours: 'Check-in 15:00 後', closed: '無', notes: '釜山廣域市中區大廳路 54-1', isBackup: false },
+        { category: '午餐', title: '機場吃午餐', mapUrl: 'https://maps.google.com/?q=Taoyuan+International+Airport', hours: '依店家而定', closed: '無', notes: '', isBackup: false },
+        { category: '晚餐', title: '味贊王鹽烤肉 富平店', mapUrl: 'https://maps.google.com/?q=味贊王鹽烤肉+富平店', hours: '11:30 - 23:00 (15:00-17:00休息)', closed: '全年無休', notes: '主要晚餐選項', isBackup: false },
+        { category: '晚餐', title: '【備選】烤肉的男子 南浦店', mapUrl: 'https://maps.google.com/?q=烤肉的男子+南浦店', hours: '16:00 - 00:30', closed: '無', notes: '替代烤肉選擇', isBackup: true },
+        { category: '晚餐', title: '【備選】豚癸豬排 南浦店', mapUrl: 'https://maps.google.com/?q=豚癸豬排+南浦店', hours: '11:00 - 21:00', closed: '無', notes: '需使用 Catchtable 候位', isBackup: true },
+        { category: '行程', title: 'Olive Young 釜山南浦店', mapUrl: 'https://maps.google.com/?q=Olive+Young+Nampo+Busan', hours: '09:00 - 22:00', closed: '全年無休', notes: '', isBackup: false },
+        { category: '行程', title: '大創購物', mapUrl: 'https://maps.google.com/?q=Daiso+Nampo+Busan', hours: '09:00 - 22:00', closed: '全年無休', notes: '', isBackup: false }
+      ],
+      day2: [
+        { category: '早餐', title: '密陽血腸豬肉湯飯', mapUrl: 'https://maps.google.com/?q=密陽血腸豬肉湯飯+釜山', hours: '24 小時營業', closed: '無', notes: '推薦自切肉', isBackup: false },
+        { category: '早餐', title: '【備選】Egg Drop 奶油吐司', mapUrl: 'https://maps.google.com/?q=Egg+Drop+Busan', hours: '07:50 - 17:00', closed: '無', notes: '早餐替代選擇', isBackup: true },
+        { category: '行程', title: '松島纜車（透明車廂）', mapUrl: 'https://maps.google.com/?q=Songdo+Marine+Cable+Car', hours: '09:00 - 21:00', closed: '強風天可能停駛', notes: '', isBackup: false },
+        { category: '行程', title: 'Running man 體驗館？', mapUrl: 'https://maps.google.com/?q=Running+Man+Busan', hours: '10:00 - 20:00', closed: '無', notes: '備用景點', isBackup: true },
+        { category: '行程', title: 'Arte Museum？', mapUrl: 'https://maps.google.com/?q=Arte+Museum+Busan', hours: '10:00 - 21:00', closed: '無', notes: '備用景點', isBackup: true },
+        { category: '午餐', title: '札嘎其市場：100號攤帝王蟹與海鮮', mapUrl: 'https://maps.google.com/?q=Jagalchi+Market', hours: '05:00 - 22:00', closed: '每週二公休（注意！）', notes: '可順便去 7 樓瞭望台', isBackup: false },
+        { category: '行程', title: 'BIFF 廣場：元祖糖餅、布帳馬車', mapUrl: 'https://maps.google.com/?q=BIFF+Square', hours: '10:00 - 22:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '富平罐頭市場：milgot 艾草機', mapUrl: 'https://maps.google.com/?q=Bupyeong+Kkangtong+Market', hours: '08:00 - 20:00', closed: '無', notes: '', isBackup: false },
+        { category: '晚餐', title: '83號謀濱 安里店', mapUrl: 'https://maps.google.com/?q=83號謀濱+廣安里', hours: '依店家公告', closed: '無', notes: '確認無人機表演有無取消', isBackup: false },
+        { category: '晚餐', title: '【備選】廣安里 水邊最高豬肉湯飯', mapUrl: 'https://maps.google.com/?q=水邊最高豬肉湯飯', hours: '24 小時營業', closed: '無', notes: '湯飯備選', isBackup: true },
+        { category: '行程', title: '廣安里無人機表演', mapUrl: 'https://maps.google.com/?q=Gwangalli+Beach', hours: '表演時間：19:00、21:00', closed: '雨天或強風取消', notes: '可順便逛 Olive Young 廣安海濱店', isBackup: false },
+        { category: '行程', title: '釜山地鐵移動至廣安站（下車步行 13 分鐘）', mapUrl: 'https://maps.google.com/?q=Gwangalli+Station', hours: '全天營運', closed: '無', notes: '', isBackup: false },
+        { category: '消夜', title: '請飯店代訂 Puradak 炸雞（黑蒜炸雞）', mapUrl: 'https://maps.google.com/?q=Puradak+Chicken+Busan', hours: '12:00 - 24:00', closed: '無', notes: '', isBackup: false }
+      ],
+      day3: [
+        { category: '早餐', title: 'Egg Drop 奶油吐司', mapUrl: 'https://maps.google.com/?q=Egg+Drop+Busan', hours: '07:50 - 17:00', closed: '無', notes: '', isBackup: false },
+        { category: '早餐', title: '【備選】密陽血腸豬肉湯飯', mapUrl: 'https://maps.google.com/?q=密陽血腸豬肉湯飯+釜山', hours: '24 小時營業', closed: '無', notes: '', isBackup: true },
+        { category: '行程', title: '大創 / Olive Young / ABC mart', mapUrl: 'https://maps.google.com/?q=Daiso+Busan', hours: '10:00 - 22:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '國際市場：買棉被（京信）', mapUrl: 'https://maps.google.com/?q=Gukje+Market+Busan', hours: '10:00 - 19:00', closed: '部分店家週日公休', notes: '', isBackup: false },
+        { category: '行程', title: 'UH Suite Check in', mapUrl: 'https://maps.google.com/?q=UH+Suite+Haeundae', hours: '15:30 Check in', closed: '無', notes: '', isBackup: false },
+        { category: '午餐', title: '1969 刀削麵', mapUrl: 'https://maps.google.com/?q=1969刀削麵+釜山', hours: '10:50 - 19:30', closed: '下午休息 15:00-17:00', notes: '', isBackup: false },
+        { category: '行程', title: '新昌洞咖啡', mapUrl: 'https://maps.google.com/?q=新昌洞咖啡+釜山', hours: '10:00 - 21:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '富平罐頭市場：紅豆奶油艾草麻吉', mapUrl: 'https://maps.google.com/?q=Bupyeong+Kkangtong+Market', hours: '08:00 - 20:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '海岸列車：尾浦站 -> 松亭站', mapUrl: 'https://maps.google.com/?q=Haeundae+Blueline+Park+-+Mipo+Station', hours: '09:30 - 19:00', closed: '全年無休', notes: '', isBackup: false },
+        { category: '行程', title: '青沙埔：踏石觀景台與環海步道', mapUrl: 'https://maps.google.com/?q=Cheongsapo+Daritdol+Observatory', hours: '09:00 - 18:00', closed: '無', notes: '回程尾浦車站有小市集', isBackup: false },
+        { category: '晚餐', title: '海雲台傳統市場', mapUrl: 'https://maps.google.com/?q=Haeundae+Traditional+Market', hours: '09:00 - 22:00', closed: '無', notes: '建議 19:00 前到比較不擁擠', isBackup: false }
+      ],
+      day4: [
+        { category: '早餐', title: '大海鮑魚粥', mapUrl: 'https://maps.google.com/?q=大海鮑魚粥+釜山', hours: '08:00 - 20:00', closed: '每週三公休（今天營業）', notes: '', isBackup: false },
+        { category: '行程', title: 'Skyline Luge 斜坡滑草車', mapUrl: 'https://maps.google.com/?q=Skyline+Luge+Busan', hours: '10:00 - 18:00', closed: '無', notes: '記得帶棒球帽遮陽', isBackup: false },
+        { category: '行程', title: '樂天世界主題樂園', mapUrl: 'https://maps.google.com/?q=Lotte+World+Adventure+Busan', hours: '10:00 - 21:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '樂天 Outlet？', mapUrl: 'https://maps.google.com/?q=Lotte+Premium+Outlet+Dongbusan', hours: '10:30 - 20:30', closed: '無', notes: '備用行程', isBackup: true },
+        { category: '午餐', title: '百年土種蔘雞湯', mapUrl: 'https://maps.google.com/?q=百年土種蔘雞湯+釜山', hours: '10:00 - 21:00', closed: '全年無休', notes: '', isBackup: false },
+        { category: '晚餐', title: '味贊王烤肉 海雲台店', mapUrl: 'https://maps.google.com/?q=味贊王鹽烤肉+海雲台', hours: '12:00 - 23:00', closed: '無', notes: '主要晚餐烤肉', isBackup: false },
+        { category: '晚餐', title: '【備選】烏龜小區烤肉', mapUrl: 'https://maps.google.com/?q=烏龜小區烤肉+海雲台', hours: '16:00 - 23:00', closed: '無', notes: '高CP值烤肉備選', isBackup: true },
+        { category: '晚餐', title: '【備選】水邊最高豬肉湯飯 海雲台店', mapUrl: 'https://maps.google.com/?q=水邊最高豬肉湯飯+海雲台', hours: '24 小時營業', closed: '無', notes: '湯飯備選', isBackup: true },
+        { category: '行程', title: 'E-mart 大賣場採買', mapUrl: 'https://maps.google.com/?q=E-MART+Haeundae', hours: '10:00 - 23:00', closed: '每個月第 2、4 個週日公休（今天週一營業）', notes: '採買伴手禮與零食', isBackup: false }
+      ],
+      day5: [
+        { category: '行程', title: '飯店 11:00 退房', mapUrl: 'https://maps.google.com/?q=Haeundae+Hotel', hours: '11:00 退房', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '新世界百貨（3 樓辦會員卡？）', mapUrl: 'https://maps.google.com/?q=Shinsegae+Centum+City', hours: '10:30 - 20:00', closed: '依官方公告', notes: '', isBackup: false },
+        { category: '行程', title: '新世界百貨 9 樓恐龍公園', mapUrl: 'https://maps.google.com/?q=Shinsegae+Centum+City+Jurassic+Park', hours: '10:30 - 20:00', closed: '依官方公告', notes: '', isBackup: false },
+        { category: '午餐', title: 'B1 Cafe Layered？', mapUrl: 'https://maps.google.com/?q=Cafe+Layered+Shinsegae+Centum', hours: '10:30 - 20:00', closed: '隨百貨公休', notes: '英式司康與甜點', isBackup: false },
+        { category: '行程', title: 'Spa Land 汗蒸幕放鬆', mapUrl: 'https://maps.google.com/?q=Spa+Land+Centum+City', hours: '09:00 - 22:00', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '16:00 出發去機場，17:00 抵達機場', mapUrl: 'https://maps.google.com/?q=Gimhae+International+Airport', hours: '全天營運', closed: '無', notes: '', isBackup: false },
+        { category: '行程', title: '搭機：釜山 1 航廈起飛 (19:10) -> 桃園 2 航廈抵達 (20:35)', mapUrl: 'https://maps.google.com/?q=Gimhae+International+Airport', hours: '19:10 - 20:35', closed: '無', notes: '', isBackup: false }
+      ]
+    };
+
+    function renderAll() {
+      ['day1', 'day2', 'day3', 'day4', 'day5'].forEach(dayId => {
+        const container = document.getElementById(dayId);
+        container.innerHTML = '';
+        if (tripData[dayId]) {
+          tripData[dayId].forEach((item) => {
+            const card = document.createElement('div');
+            const isBackup = item.isBackup === true;
+            card.className = `card ${isBackup ? 'is-backup' : ''}`;
+            
+            const mapLink = item.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(item.title)}`;
+
+            card.innerHTML = `
+              <div class="card-header-tags">
+                <span class="card-tag">${item.category || '行程'}</span>
+                <span class="status-tag ${isBackup ? 'backup' : ''}">${isBackup ? '💡 備用' : '🌟 主要'}</span>
+              </div>
+              <div class="card-title">${item.title || '未命名項目'}</div>
+              <div class="card-hours">⏰ <b>營業時間:</b> ${item.hours || '待定'}</div>
+              <div class="card-hours">🚫 <b>公休日:</b> <span class="closed-day">${item.closed || '無'}</span></div>
+              ${item.notes ? `<div class="card-info">📝 <b>備註:</b> ${item.notes}</div>` : ''}
+              
+              <a href="${mapLink}" target="_blank" class="btn-map">
+                📍 開啟 Google Map 定位
+              </a>
+            `;
+            container.appendChild(card);
+          });
+        }
+      });
+    }
+
+    function switchDay(dayId, event) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.day-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(dayId).classList.add('active');
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
